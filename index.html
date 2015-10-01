@@ -4,12 +4,36 @@
     <meta charset="UTF-8">
     <title>Racing Frogs</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="app.css">
 
 </head>
 
 <body ng-controller="MainController as vm">
     {{240+280}}
     <div class="container">
+        <div class="panel panel-primary">
+            <div class="panel-heading">{{vm.racingTitle}}
+            </div>
+            <div class="panel-body">
+                <!--<div ng-repeat="frog in controller.raceSet" class="frogLane">-->
+                <div ng-repeat="frog in vm.racingFrogs" class="frogLane">
+                    {{frog.name}}
+                    <div class="frogHolder" style="left:{{frog.posX}}%">
+                        <img src="http://froglegs.org/ediblefrog2.gif" class="frogImg">
+                        <div class="frogLabel" style="background-color:{{frog.color}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <span class="btn btn-default" ng-click="vm.race()">Start Race</span>
+            </div>
+        </div>
+    </div>
+        
+        
+        
+        
         <div class="panel panel-primary">
             <div class="panel-heading">
                 Fun with Joe and Bob
