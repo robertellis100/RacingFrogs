@@ -1,17 +1,53 @@
 var app = angular.module('racingFrogs', []);
 app.controller('MainController', MainController);
 //No need to change anything above this line.
+
+app.controller('AppCtrl-StartRaceBtn',['$scope', function($scope){
+    $scope.isDisabled = false;
+    $scope.disableClick = function() {
+        alert("Clicked!");
+        // http://geniuscarrier.com/disable-ng-click-in-angularjs/
+        //modified for ng-hide
+        //https://docs.angularjs.org/api/ng/directive/ngHide
+        $scope.isDisabled = true;
+        return false;
+    }
+}]);
+app.controller('AppCtrl-NewRaceDayBtn',['$scope', function($scope){
+    $scope.isDisabled = false;
+    $scope.disableClick = function() {
+        alert("Clicked!");
+        // http://geniuscarrier.com/disable-ng-click-in-angularjs/
+        //modified for ng-hide
+        //https://docs.angularjs.org/api/ng/directive/ngHide
+        $scope.isDisabled = true;
+        return false;
+    }
+}]);
+
+
+
+
 var myVar;
-function MainController($timeout) {
+function MainController($timeout,BettingService) {
     var vm = this; //instead of using this when refering to the controller, let's use vm. It will make things easier.
     //sounds good
+    
+    
+    
+    
+    
     vm.joe = new Guy("Joe", 100)
     vm.bob = new Guy("Bob", 150)
     vm.bank = 200;
-
+    
+    
+    
     function Guy(name, startingCash) {
         this.name = name;
         this.cash = startingCash;
+        this.selectedBet;
+        this.betAmount=0;
         this.giveCash = function (amount) {
             if (amount <= this.cash && amount > 0) {
                 this.cash = this.cash - amount;
@@ -142,13 +178,14 @@ function MainController($timeout) {
                 }
             })
             vm.winners.unshift(_firstPlace);
+            //BettingService.setBetWinner(vm);
             return vm.winners
         }
         else {
             return true;
         }
     }
-
+vm.raceId = BettingService.registerRace();
 }
 
 
@@ -218,3 +255,37 @@ function shuffle(array) {
 
     return array;
 }
+
+app.service('BettingService',BettingService);
+function BettingService(){
+    var _races={};
+    var _raceID=0;
+    this.registerRace=function(){
+        return new this.Race();
+    }
+    this.getRace = function (raceId) {
+        
+    }
+    this.Race=function(){
+        this.id=_raceID;
+        _raceID++;
+        //this.contestants=[];   already referenced in Frog Service
+        this.bets={};
+        this.open=true; //if race is open
+        //this.tickets=1300;   Don't see the point/use/purpose of tickets
+        _races[this.id] = this;  //good 'ol bracket notation accessing property of obejct
+        
+    }
+    this.setBetWinner=function(vm){
+        //find who selected the race winner
+        for(var i=0;i<vm.winners.length;i++){
+            if(vm.winners[i].name===vm.joe.selectedBet){
+                vm.joe.receiveCash(vm.joe.betAmount*2);
+            }
+        }
+    }
+}
+
+
+
+
