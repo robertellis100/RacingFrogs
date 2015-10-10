@@ -9,15 +9,15 @@
 </head>
 
 <body ng-controller="MainController as vm">
-    {{240+280}}
     <br/>{{vm.raceId}}
     <div class="container">
         <div class="panel panel-primary">
             <div class="panel-heading">{{vm.racingTitle}}
             </div>
-            <div class="panel-body">
+            <div class="panel-body" >
+                <div class="lineit">
                 <!--<div ng-repeat="frog in controller.raceSet" class="frogLane">-->
-                <div ng-repeat="frog in vm.racingFrogs" class="frogLane">
+                <div ng-repeat="frog in vm.heat.racers" class="frogLane">
                     {{frog.name}}
                     <div class="frogHolder" style="left:{{frog.posX}}%">
                         <img src="http://froglegs.org/ediblefrog2.gif" class="frogImg">
@@ -26,17 +26,24 @@
                     </div>
                 </div>
             </div>
+                <div ng-if="vm.betQuantity > 0" class="lineit">
+                    
+                    <div ng-repeat="person in vm.people">
+                        <div class="person-name"/>
+                            <ul>{{person.name}}:
+                        </div>
+                        <div ng-repeat="bet in person.bets">
+                            <li>{{bet.racer.name}}: {{bet.amount}}</li>
+                        </div>
+                  </ul></div>
+                </div>
             <div class="panel-footer">
-                <div ng-controller="AppCtrl-StartRaceBtn">
-                    <span class="btn btn-default" ng-click="vm.race();disableClick()" ng-hide="isDisabled" ng-model="isDisabled">Start Race</span>
-                    <!--http://stackoverflow.com/questions/16813945/how-to-add-many-functions-in-one-ng-click-->
-                    <!--<button ng-click="disableClick()" ng-disabled="isDisabled" ng-model="isDisabled">Disable ng-click</button>-->
-                <div ng-controller="AppCtrl-NewRaceDayBtn">   
-                    <span class="btn btn-default" ng-click="vm.race()" ng-disabled="isDisabled" ng-model="isDisabled">Start Race</span>
+                <div>
+                    <span ng-if="!vm.heat.status" class="btn btn-default" ng-click="vm.startRace()">Start Race</span>
+                    <span ng-if="vm.heat.status === 'Finished'" class="btn btn-default" ng-click="vm.startNewHeat()">Next Heat</span>
                 </div>
             </div>
         </div>
-    </div>
 
 
 
@@ -52,30 +59,26 @@
             <p>
                 Bob has {{ vm.bob.cash | currency }}
             </p>
-            <p>
-                The bank has {{ vm.bank | currency }}
-            </p>
         </div>
 
         <form name="myForm">
-            Place
-            <input type="text" name="betAmount" ng-model="vm.joe.betAmount"> on
-            <!--<label for="betSelect">Make a choice:</label>-->
-            <select name="betSelect" id="betSelect" ng-options="frog.name for frog in vm.racingFrogs" ng-model="vm.joe.selectedBet"></select>
+            <select name="bettor"  ng-options="person.name for person in vm.people" ng-model="person"></select>
+            Places
+            <input type="number" ng-model="amount"/>
+            On
+            <select name="betSelect" ng-options="frog.name for frog in vm.heat.racers" ng-model="racer"></select>
+            <button ng-click="vm.placeBet(person,racer,amount);" ng-model="clicked">Place Bet</button>
         </form>
 
-
-
         <div class="panel-footer">
-            <span class="btn btn-default" ng-click="vm.joe.giveCash(vm.joe.betAmount)">Set Your Bet</span>
-            <span class="btn btn-default" ng-click="vm.giveMoneyToJoe()">Give $10 to Joe</span>
-            <span class="btn btn-default" ng-click="vm.receiveMoneyFromBob()">Receive $5 from Bob</span>
         </div>
     </div>
-    </div>
+ </div>
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.6/angular.min.js"></script>
-    <script src="app.js"></script>
+    <script src="app/app.js"></script>
+    <script src="app/frog.service.js"></script>
+    <script src="app/betting.service.js"></script>
 </body>
 
 </html>
